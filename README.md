@@ -16,7 +16,7 @@ A ideia é utilizar a aplicação [giropops-senhas](https://github.com/badtuxx/g
 
 ```
 .
-|——— giropops-senhas/      -> Código fonte do [giropops-senhas](https://github.com/badtuxx/giropops-senhas) e um Dockerfile de imagem distroless e nonroot
+|——— giropops-senhas/      -> Código fonte do giropops-senhas e um Dockerfile de imagem distroless e nonroot
 |——— nginx/
 |    |——— cmd.sh           -> Pequeno comando shell para iniciar o nginx. Substitui variáveis de ambiente no arquivo de configuração nginx.conf já que o nginx não possui suporte nativo para variáveis de ambiente
 |    |——— Dockerfile       -> Dockerfile. Utiliza o cmd.sh como CMD
