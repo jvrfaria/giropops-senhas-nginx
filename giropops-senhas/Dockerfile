@@ -1,24 +1,23 @@
-FROM cgr.dev/chainguard/python:latest-dev AS builder
+FROM python:3.13-slim AS builder
 
 WORKDIR /app
+COPY requirements.txt .
 
-RUN python -m venv venv
-ENV PATH="/app/venv/bin:$PATH"
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir \
+    --target=/python-deps \
+    -r requirements.txt
 
-FROM cgr.dev/chainguard/python:latest
+FROM gcr.io/distroless/python3-debian13:nonroot-1d8908e5c48cc27b0e52f67fe8163c6572137506
+
+COPY --from=builder --chown=nonroot:nonroot /python-deps /python-deps
 
 WORKDIR /app
+COPY --chown=nonroot:nonroot app.py app.py
+COPY --chown=nonroot:nonroot templates templates/
+COPY --chown=nonroot:nonroot static static/
 
-COPY app.py app.py
-COPY templates templates/
-COPY static static/
-COPY --from=builder /app/venv /app/venv
-
-
-ENV PATH="/app/venv/bin:$PATH"
+ENV PYTHONPATH=/python-deps
 
 EXPOSE 5000
 
-ENTRYPOINT ["flask", "run", "--host=0.0.0.0"]
+CMD [ "-m", "flask", "run", "--host=0.0.0.0" ]
