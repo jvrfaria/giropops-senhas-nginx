@@ -13,7 +13,6 @@ services:
     deploy:
       replicas: 3
       endpoint_mode: dnsrr
-      resources:
       restart_policy:
         condition: on-failure
         delay: 5s
