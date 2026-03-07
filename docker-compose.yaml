@@ -53,9 +53,6 @@ services:
     networks:
       - private-network
       - public-network
-    environment:
-      - GIROPOPS_SENHAS_DNS=giropops-senhas
-      - GIROPOPS_SENHAS_PORT=5000
     labels:
       com.docker.description: "Giropops Senhas Reverse Proxy"
       com.docker.version: "1.0"
