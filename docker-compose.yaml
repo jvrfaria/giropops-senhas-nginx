@@ -12,7 +12,6 @@ services:
       com.docker.version: "1.0"
     deploy:
       replicas: 3
-      endpoint_mode: dnsrr
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -21,19 +20,13 @@ services:
       - redis
 
   redis:
-    image: redis:8.6.1-alpine3.23
-    command: redis-server --appendonly yes
+    image: dhi.io/redis:8.6.1-debian13
+    command: redis-server --appendonly yes --protected-mode no
     networks:
       - private-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
     labels:
       com.docker.description: "Redis Server"
-      com.docker.version: "8.6.1-alpine3.23"
+      com.docker.version: "8.6.1-debian13"
     deploy:
       replicas: 1
       restart_policy:
@@ -45,6 +38,12 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+      args:
+        - GIROPOPS_SENHAS_DNS=giropops-senhas
+        - GIROPOPS_SENHAS_PORT=5000
+      secrets:
+        - tls-certificate
+        - tls-key
     ports:
       - name: server_port
         target: 443
@@ -62,9 +61,6 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-    secrets:
-      - tls-certificate
-      - tls-key
 
 networks:
   private-network:
